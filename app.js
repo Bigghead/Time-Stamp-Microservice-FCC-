@@ -37,9 +37,8 @@ app.get('/:timeStamp', function(req, res){
     returnedObj.natural = convertUnix(parseInt(time));
   } else {
       var time = time.replace(/&/g, ' ');
-      console.log(time);
-      console.log(typeof time);
-      console.log(moment(time, momentFormats[0], true).isValid());
+
+      //if param matches this format : December 25, 2016
       if(moment(time, momentFormats[0]).isValid()){
       returnedObj.unix = moment(time).format('X');;
       returnedObj.natural = time;
