@@ -16,6 +16,8 @@ app.get('/:timeStamp', function(req, res){
     unix : null
   };
   var time = req.params.timeStamp;
+
+  //if param is unix
   if(moment(time, momentFormats[1], true).isValid()){
     // time = parseInt(time);
 
@@ -34,11 +36,18 @@ app.get('/:timeStamp', function(req, res){
     returnedObj.unix = parseInt(time);
     returnedObj.natural = convertUnix(parseInt(time));
   } else {
-    var time = time.replace(/&/g, ' ');
-    returnedObj.unix = moment(time).format('X');;
-    returnedObj.natural = time;
+      var time = time.replace(/&/g, ' ');
+      console.log(time);
+      console.log(typeof time);
+      console.log(moment(time, momentFormats[0], true).isValid());
+      if(moment(time, momentFormats[0]).isValid()){
+      returnedObj.unix = moment(time).format('X');;
+      returnedObj.natural = time;
+    } else{
+      returnedObj.unix = null;
+      returnedObj.natural = null;
+   }
   }
-
 
   res.send(returnedObj);
 });
