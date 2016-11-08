@@ -6,25 +6,43 @@ var express = require('express'),
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/:timeStamp', function(req, res){
+
+  var momentFormats= [
+    'MMMM Do, YYYY',
+    'X'
+  ];
   var returnedObj = {
     natural : null,
     unix : null
   };
-  var time = (req.params.timeStamp).replace(/&/g," ");//.replace(/,/g, "");
-  if(moment(time, 'MMMM Do, YYYY').isValid()){
+  var time = req.params.timeStamp;
+  if(moment(time, momentFormats[1], true).isValid()){
+    // time = parseInt(time);
+
+    function convertUnix(number){
+      var date = new Date(number * 1000);
+      var month = date.getMonth(); // returns a number
+      var actualMonth = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var day = date.getDate();
+      var year = date.getFullYear();
+
+      // console.log(date + actualMonth[month] + ' ' + day + ', ' + year);
+
+      return actualMonth[month] + ' ' + day + ', ' + year;
+    }
+
+    returnedObj.unix = parseInt(time);
+    returnedObj.natural = convertUnix(parseInt(time));
+  } else {
+    var time = time.replace(/&/g, ' ');
+    returnedObj.unix = moment(time).format('X');;
     returnedObj.natural = time;
-    returnedObj.unix = moment(time).format('X');
-  } else if(moment(time, 'X').isValid()){
-    returnedObj.unix = time;
-    returnedObj.natural = moment(time).format('MMMM Do, YYYY');
   }
-  console.log(time);
-  console.log(moment(time, 'MMMM Do, YYYY').isValid());
 
 
   res.send(returnedObj);
 });
 
-app.listen(3000, function(){
-  console.log('Listening on 3000');
+app.listen(5000, function(){
+  console.log('Listening on 5000');
 });
